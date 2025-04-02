@@ -41,12 +41,22 @@ public class BrickLayout {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
                 if (allZero && row == brickLayout.length - 1) {
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row-1][col] = 1;
+                        brickLayout[row][col] = 1;
                     }
+                    row = brickLayout.length;
+                }
+                else if (!allZero) {
+                    for (int col = start; col <= end; col++) {
+                        brickLayout[row - 1][col] = 1;
+                    }
+                    row = brickLayout.length;
                 }
 
 
             }
+//            for (int col = 0; col <= 0; col++) {
+//                        brickLayout[0][col] = 1;
+//                    }
 //            for (int col = start; col <= end; col++) {
 //                        brickLayout[row - 1][col] = 1;
 //                    }
