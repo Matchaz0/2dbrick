@@ -36,16 +36,20 @@ public class BrickLayout {
             int start = b.getStart();
             int end = b.getEnd();
 
-            for (int row = brickLayout.length - 1; row >= 0; row--) {
+            //tryna get a top to bottom approach now
+            for (int row = 0; row < brickLayout.length; row++) {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
-                if (allZero) {
+                if (allZero && row == brickLayout.length - 1) {
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row][col] = 1;
+                        brickLayout[row-1][col] = 1;
                     }
-                    row = -1;
                 }
+
+
             }
-            // put this brick into the 2D array
+//            for (int col = start; col <= end; col++) {
+//                        brickLayout[row - 1][col] = 1;
+//                    }
 
         }
     }
