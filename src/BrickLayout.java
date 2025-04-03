@@ -7,12 +7,16 @@ public class BrickLayout {
 
     private ArrayList<Brick> bricks;
     private int[][] brickLayout;
+    private int rows;
     private int cols;
+    ArrayList<String> fileData;
 
-    public BrickLayout(String fileName, int cols, boolean dropAllBricks) {
-        this.cols = cols;
-        ArrayList<String> fileData = getFileData(fileName);
+    public BrickLayout(String fileName, boolean dropAllBricks) {
+        fileData = getFileData(fileName);
         bricks = new ArrayList<Brick>();
+        int range = findEndOfRange();
+        int height = findHeight();
+
         for (String line : fileData) {
             String[] points = line.split(",");
             int start = Integer.parseInt(points[0]);
@@ -20,12 +24,33 @@ public class BrickLayout {
             Brick b = new Brick(start, end);
             bricks.add(b);
         }
-        brickLayout = new int[bricks.size()][cols];
+        brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
+        System.out.println(range);
+        System.out.println(height);
         if (dropAllBricks) {
             while (bricks.size() != 0) {
                 doOneBrick();
             }
         }
+    }
+
+    public int findEndOfRange() {
+        String firstBrick = fileData.getFirst();
+        String[] points = firstBrick.split(",");
+        int end = Integer.parseInt(points[1]);
+
+        for (String brick:fileData) {
+            points = brick.split(",");
+            int tempEnd = Integer.parseInt(points[1]);
+            if (tempEnd > end) {
+                end = tempEnd;
+            }
+        }
+        return end;
+    }
+
+    public int findHeight() {
+        return fileData.size();
     }
 
     public void doOneBrick() {
@@ -54,13 +79,6 @@ public class BrickLayout {
 
 
             }
-//            for (int col = 0; col <= 0; col++) {
-//                        brickLayout[0][col] = 1;
-//                    }
-//            for (int col = start; col <= end; col++) {
-//                        brickLayout[row - 1][col] = 1;
-//                    }
-
         }
     }
 
@@ -107,5 +125,8 @@ public class BrickLayout {
         }
         return allEmpty;
 
+    }
+    public int[][] returnLayout() {
+        return brickLayout;
     }
 }
