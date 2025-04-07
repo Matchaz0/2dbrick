@@ -30,7 +30,7 @@ public class DrawPanel extends JPanel implements MouseListener {
         System.out.println(time - originalTime);
 
         if ((time - originalTime) > 1000) {
-            b.doOneBrick();
+            b.findBrickHeightsLocation();
             grid = b.returnLayout();
             originalTime = System.currentTimeMillis();
         }
@@ -79,7 +79,7 @@ public class DrawPanel extends JPanel implements MouseListener {
     public void mouseClicked(MouseEvent e) {
 
 //        randomizeGrid();
-        b.doOneBrick();
+        b.findBrickHeightsLocation();
         grid = b.returnLayout();
 
     }

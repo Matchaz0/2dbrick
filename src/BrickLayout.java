@@ -27,11 +27,12 @@ public class BrickLayout {
         brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
         System.out.println(range);
         System.out.println(height);
-        if (dropAllBricks) {
-            while (bricks.size() != 0) {
-                doOneBrick();
-            }
-        }
+        System.out.println();
+
+
+        // find height for all bricks
+        findBrickHeightsLocation();
+
     }
 
     public int findEndOfRange() {
@@ -53,11 +54,12 @@ public class BrickLayout {
         return fileData.size();
     }
 
-    public void doOneBrick() {
 
-        if (!bricks.isEmpty()) {
+    public void findBrickHeightsLocation() {
+        ArrayList<Integer> instructions = new ArrayList<>();
+        for (int brickN = 0; brickN < bricks.size(); brickN++) {
             // getting latest brick
-            Brick b = bricks.remove(0);
+            Brick b = bricks.get(brickN);
             int start = b.getStart();
             int end = b.getEnd();
 
@@ -65,15 +67,21 @@ public class BrickLayout {
             for (int row = 0; row < brickLayout.length; row++) {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
                 if (allZero && row == brickLayout.length - 1) {
+                    // set row length
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row][col] = 1;
+                        bricks.get(brickN).setHeight(row);
+//                        brickLayout[row][col] = 1;
                     }
+
+                    // reset
                     row = brickLayout.length;
                 }
                 else if (!allZero) {
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row - 1][col] = 1;
+                        bricks.get(brickN).setHeight(row);
+//                        brickLayout[row - 1][col] = 1;
                     }
+                    // reset
                     row = brickLayout.length;
                 }
 
@@ -126,6 +134,7 @@ public class BrickLayout {
         return allEmpty;
 
     }
+
     public int[][] returnLayout() {
         return brickLayout;
     }
