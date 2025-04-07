@@ -3,6 +3,7 @@ public class Brick {
     private int end;
     private int height;
     private int tempHeight;
+    private boolean active;
 
     public Brick(int start, int end) {
         this.start = start;
@@ -37,5 +38,27 @@ public class Brick {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getTempHeight() {
+        return tempHeight;
+    }
+
+    public void setTempHeight(int height) {
+        this.tempHeight = height;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isFinished() {
+        return (height < tempHeight);
+    }
+
+    public void setActive() {
+        if (!isActive()) {
+            active = !active;
+        }
     }
 }

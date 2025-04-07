@@ -24,12 +24,21 @@ public class BrickLayout {
             Brick b = new Brick(start, end);
             bricks.add(b);
         }
+        // remove
+        height +=2;
+        // remove
+
         brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
         System.out.println(range);
         System.out.println(height);
+
         if (dropAllBricks) {
-            while (bricks.size() != 0) {
-                doOneBrick();
+            findFinalHeightsOfBricks();
+            while (!finished()) {
+                updateBrickLayout();
+                printBrickLayout();
+                System.out.println();
+
             }
         }
     }
@@ -53,11 +62,10 @@ public class BrickLayout {
         return fileData.size();
     }
 
-    public void doOneBrick() {
-
-        if (!bricks.isEmpty()) {
+    public void findFinalHeightsOfBricks() {
+        for (int brick = 0; brick < bricks.size();brick++) {
             // getting latest brick
-            Brick b = bricks.remove(0);
+            Brick b = bricks.get(brick);
             int start = b.getStart();
             int end = b.getEnd();
 
@@ -66,13 +74,15 @@ public class BrickLayout {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
                 if (allZero && row == brickLayout.length - 1) {
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row][col] = 1;
+                        bricks.get(brick).setHeight(row);
+//                        brickLayout[row][col] = 1;
                     }
                     row = brickLayout.length;
                 }
                 else if (!allZero) {
                     for (int col = start; col <= end; col++) {
-                        brickLayout[row - 1][col] = 1;
+                        bricks.get(brick).setHeight(row);
+//                        brickLayout[row - 1][col] = 1;
                     }
                     row = brickLayout.length;
                 }
@@ -98,6 +108,21 @@ public class BrickLayout {
 
         return fileData;
     }
+    public void updateBrickLayout() {
+        for (int row = 0; row < brickLayout.length; row++) {
+            for (int col = 0; col < brickLayout[0].length; col++) {
+                brickLayout[row][col] = 0;
+            }
+        }
+        for (Brick b : bricks) {
+            for (int col = b.getStart(); col <= b.getEnd(); col++) {
+                brickLayout[b.getTempHeight()][col] = 1;
+            }
+            if (!b.isFinished()) {
+                b.setTempHeight(b.getTempHeight() + 1);
+            }
+        }
+    }
 
     public void printBrickLayout() {
         for (int r = 0; r < brickLayout.length; r++) {
@@ -106,6 +131,16 @@ public class BrickLayout {
             }
             System.out.println();
         }
+    }
+
+    public boolean finished() {
+        boolean finish = true;
+        for (Brick b: bricks) {
+            if (!b.isFinished()) {
+                finish = false;
+            }
+        }
+        return finish;
     }
 
     public boolean checkBrickSpot(int r, int c) {
@@ -129,4 +164,6 @@ public class BrickLayout {
     public int[][] returnLayout() {
         return brickLayout;
     }
+
+
 }
