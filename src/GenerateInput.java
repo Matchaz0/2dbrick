@@ -5,7 +5,7 @@ public class GenerateInput {
         Random rand = new Random();
         int numberOfBricks = 20;
 
-
+        // generate random input
         for (int bricks = 0; bricks < numberOfBricks; bricks++) {
             int length = rand.nextInt(2,10); // 2-6
             int upper = rand.nextInt(length, 21);

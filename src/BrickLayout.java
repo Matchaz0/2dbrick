@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BrickLayout {
-
     private ArrayList<Brick> bricks;
     private int[][] brickLayout;
     private int height; // how tall
-    private int range; // collumn number
+    private int range; // column number
     private ArrayList<String> fileData;
 
-    public BrickLayout(String fileName, boolean dropAllBricks) {
+    public BrickLayout(String fileName) {
+        // find and init the empty brick layout
         fileData = getFileData(fileName);
         bricks = new ArrayList<Brick>();
         range = findEndOfRange();
         height = findHeight();
+        brickLayout = new int[height][range+1];
 
+        // get all the bricks
         for (String line : fileData) {
             String[] points = line.split(",");
             int start = Integer.parseInt(points[0]);
@@ -25,15 +27,12 @@ public class BrickLayout {
             bricks.add(b);
         }
 
-        brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
-        System.out.println(range);
-        System.out.println(height);
-
         // find the bricks height using a simulation
+        // so later bricks can know the end point after the drop
         findFinalHeightsOfBricks();
-        // find the new array height
     }
 
+    // find how many collumsn there should be
     public int findEndOfRange() {
         String firstBrick = fileData.getFirst();
         String[] points = firstBrick.split(",");
@@ -49,19 +48,14 @@ public class BrickLayout {
         return end;
     }
 
+    // how many rows
     public int findHeight() {
         return fileData.size();
     }
 
-    public int findActualHeight(int[][] finalLayout) {
-        for (int row = 0; row < finalLayout.length; row++) {
-            if (checkBrickRowEmpty(row, 0, finalLayout[0].length)) {
-                return row;
-            }
-        }
-        return 0;
-    }
-
+    // find each final destination for each brick
+    // it does this by dropping each premptively
+    // and finding what row it end up in
     public void findFinalHeightsOfBricks() {
 
         for (int brick = 0; brick < bricks.size();brick++) {
@@ -70,7 +64,8 @@ public class BrickLayout {
             int start = b.getStart();
             int end = b.getEnd();
             int height = 0;
-            //tryna get a top to bottom approach now
+            // tryna get a top to bottom approach now
+            // check conditions to ensure brick is in proper placement
             for (int row = 0; row < brickLayout.length; row++) {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
                 if (allZero && row == brickLayout.length - 1) {
@@ -78,6 +73,7 @@ public class BrickLayout {
                         brickLayout[row][col] = 1;
                         height = row;
                     }
+                    // set row to exit condition
                     row = brickLayout.length;
                 }
                 else if (!allZero) {
@@ -85,14 +81,19 @@ public class BrickLayout {
                         brickLayout[row - 1][col] = 1;
                         height = row - 1;
                     }
+                    // set row to exit condition
                     row = brickLayout.length;
                 }
             }
+            // set the height of the brick
             bricks.get(brick).setHeight(height);
         }
+//        System.out.println(brickLayout); // this can be uncommented to find the final layout
+        // reset brick layout for dropping, now that we've found the height
         resetBrickLayout();
     }
 
+    // reinits layout
     public void resetBrickLayout() {
         for (int row = 0; row < brickLayout.length; row++) {
             for (int col = 0; col < brickLayout[0].length; col++) {
@@ -101,6 +102,9 @@ public class BrickLayout {
         }
     }
 
+    // going through each of the bricks.
+    // find the first brick (if there is) and make it active.
+    // this will activate during each interval for a drop
     public void activateOneBrick() {
         boolean doOnce = true;
         for (Brick b: bricks) {
@@ -111,6 +115,7 @@ public class BrickLayout {
         }
     }
 
+    // self explanitory
     public ArrayList<String> getFileData(String fileName) {
         File f = new File(fileName);
         Scanner s = null;
@@ -126,18 +131,23 @@ public class BrickLayout {
 
         return fileData;
     }
+
+    // going through every brick
     public void updateBrickLayout() {
-        // reset make empty
+        // make sure to reset the layout first
         resetBrickLayout();
 
-
+        // if brick is not in it's final destination (if temp height is less than final height)
         for (int brick = 0; brick < bricks.size(); brick++) {
-            Brick b = bricks.get(brick);
 
+            Brick b = bricks.get(brick);
+            // then make it move down by one
             if (!b.isFinished() && b.isActive()) {
                 bricks.get(brick).setTempHeight(b.getTempHeight() + 1);
             }
+            // or if it is at the destination
             if (b.isActive()) {
+                // just print it statically
                 for (int col = b.getStart(); col <= b.getEnd(); col++) {
                     brickLayout[b.getTempHeight()][col] = 1;
                 }
@@ -145,6 +155,7 @@ public class BrickLayout {
         }
     }
 
+    // no duh
     public void printBrickLayout() {
         for (int r = 0; r < brickLayout.length; r++) {
             for (int c = 0; c < brickLayout[0].length; c++) {
@@ -153,7 +164,8 @@ public class BrickLayout {
             System.out.println();
         }
     }
-    // Exit condition to stop moving bricks
+
+    // Exit condition if we stop moving all bricks
     public boolean finished() {
         boolean finish = true;
         for (Brick b: bricks) {
@@ -164,6 +176,7 @@ public class BrickLayout {
         return finish;
     }
 
+    // is the specific piece a 1?
     public boolean checkBrickSpot(int r, int c) {
         if (brickLayout[r][c] == 1) {
             return true;
@@ -172,6 +185,7 @@ public class BrickLayout {
         }
     }
 
+    // using method above, is the row from a certain range empty or have 1's
     public boolean checkBrickRowEmpty(int r, int start, int end) {
         boolean allEmpty = true;
         for (int n = start; n <= end; n++) {
@@ -182,6 +196,8 @@ public class BrickLayout {
         return allEmpty;
 
     }
+
+    // return the brick layout for the game
     public int[][] returnLayout() {
         return brickLayout;
     }
