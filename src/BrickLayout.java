@@ -9,7 +9,7 @@ public class BrickLayout {
     private int[][] brickLayout;
     private int height; // how tall
     private int range; // collumn number
-    ArrayList<String> fileData;
+    private ArrayList<String> fileData;
 
     public BrickLayout(String fileName, boolean dropAllBricks) {
         fileData = getFileData(fileName);

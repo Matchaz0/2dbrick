@@ -7,9 +7,9 @@ import java.util.Random;
 
 public class DrawPanel extends JPanel implements MouseListener {
     private int[][] grid;
-    Random rand;
-    long originalTime;
-    BrickLayout b;
+    private Random rand;
+    private long originalTime;
+    private BrickLayout b;
 
     public DrawPanel() {
         grid = new int[30][40];
