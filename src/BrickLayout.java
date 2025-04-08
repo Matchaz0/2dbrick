@@ -34,19 +34,15 @@ public class BrickLayout {
 
         findFinalHeightsOfBricks();
         System.out.println();
-                    for (Brick b:bricks) {
+        for (Brick b:bricks) {
                 System.out.println(b.getHeight());
             }
 
-        if (dropAllBricks) {
-            findFinalHeightsOfBricks();
-            while (!finished()) {
-                activateOneBrick();
-                updateBrickLayout();
-                printBrickLayout();
-                System.out.println();
-
-            }
+        while (!finished()) {
+            activateOneBrick();
+            updateBrickLayout();
+            printBrickLayout();
+            System.out.println();
         }
     }
 
@@ -149,11 +145,6 @@ public class BrickLayout {
                     brickLayout[b.getTempHeight()][col] = 1;
                 }
             }
-
-            // if brick is not done then set temp height to height
-
-//            System.out.println("Temp:" + b.getTempHeight());
-//            System.out.println("Set: " + b.getHeight());
         }
     }
 
