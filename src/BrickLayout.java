@@ -7,6 +7,7 @@ public class BrickLayout {
 
     private ArrayList<Brick> bricks;
     private int[][] brickLayout;
+    private int[][] brickLayout2;
     private int rows;
     private int cols;
     ArrayList<String> fileData;
@@ -29,6 +30,7 @@ public class BrickLayout {
         // remove
 
         brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
+        brickLayout2 = new int[height][range+1];
         System.out.println(range);
         System.out.println(height);
 
@@ -39,6 +41,15 @@ public class BrickLayout {
                 printBrickLayout();
                 System.out.println();
 
+            }
+            for (Brick b:bricks) {
+                System.out.println(b.getHeight());
+            }
+            for (int[] w:brickLayout2) {
+                for (int w2:w) {
+                    System.out.print(w2);
+                }
+                System.out.println();
             }
         }
     }
@@ -63,31 +74,41 @@ public class BrickLayout {
     }
 
     public void findFinalHeightsOfBricks() {
+        int[][] finalBrickLayout;
+
         for (int brick = 0; brick < bricks.size();brick++) {
             // getting latest brick
             Brick b = bricks.get(brick);
             int start = b.getStart();
             int end = b.getEnd();
-
+            int height = 0;
             //tryna get a top to bottom approach now
             for (int row = 0; row < brickLayout.length; row++) {
                 boolean allZero = checkBrickRowEmpty(row, start, end);
                 if (allZero && row == brickLayout.length - 1) {
                     for (int col = start; col <= end; col++) {
-                        bricks.get(brick).setHeight(row);
-//                        brickLayout[row][col] = 1;
+                        brickLayout[row][col] = 1;
+                        height = row;
                     }
                     row = brickLayout.length;
                 }
                 else if (!allZero) {
                     for (int col = start; col <= end; col++) {
-                        bricks.get(brick).setHeight(row);
-//                        brickLayout[row - 1][col] = 1;
+                        brickLayout[row - 1][col] = 1;
+                        height = row - 1;
                     }
                     row = brickLayout.length;
                 }
+            }
+            bricks.get(brick).setHeight(height);
+            finalBrickLayout = brickLayout.clone();
+        }
+    }
 
-
+    public void resetBrickLayout() {
+        for (int row = 0; row < brickLayout.length; row++) {
+            for (int col = 0; col < brickLayout[0].length; col++) {
+                brickLayout[row][col] = 0;
             }
         }
     }
@@ -109,18 +130,23 @@ public class BrickLayout {
         return fileData;
     }
     public void updateBrickLayout() {
-        for (int row = 0; row < brickLayout.length; row++) {
-            for (int col = 0; col < brickLayout[0].length; col++) {
-                brickLayout[row][col] = 0;
+        // reset make empty
+        resetBrickLayout();
+
+
+        for (int brick = 0; brick < bricks.size(); brick++) {
+            Brick b = bricks.get(brick);
+
+            if (!b.isFinished()) {
+                bricks.get(brick).setTempHeight(b.getTempHeight() + 1);
             }
-        }
-        for (Brick b : bricks) {
             for (int col = b.getStart(); col <= b.getEnd(); col++) {
                 brickLayout[b.getTempHeight()][col] = 1;
             }
-            if (!b.isFinished()) {
-                b.setTempHeight(b.getTempHeight() + 1);
-            }
+            // if brick is not done then set temp height to height
+
+            System.out.println("Temp:" + b.getTempHeight());
+            System.out.println("Set: " + b.getHeight());
         }
     }
 

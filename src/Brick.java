@@ -53,7 +53,7 @@ public class Brick {
     }
 
     public boolean isFinished() {
-        return (height < tempHeight);
+        return (height <= tempHeight);
     }
 
     public void setActive() {
