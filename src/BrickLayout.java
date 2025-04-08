@@ -7,15 +7,15 @@ public class BrickLayout {
 
     private ArrayList<Brick> bricks;
     private int[][] brickLayout;
-    private int rows;
-    private int cols;
+    private int height; // how tall
+    private int range; // collumn number
     ArrayList<String> fileData;
 
     public BrickLayout(String fileName, boolean dropAllBricks) {
         fileData = getFileData(fileName);
         bricks = new ArrayList<Brick>();
-        int range = findEndOfRange();
-        int height = findHeight();
+        range = findEndOfRange();
+        height = findHeight();
 
         for (String line : fileData) {
             String[] points = line.split(",");
@@ -24,13 +24,14 @@ public class BrickLayout {
             Brick b = new Brick(start, end);
             bricks.add(b);
         }
-        // remove
-        // remove
 
         brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
         System.out.println(range);
         System.out.println(height);
+
+        // find the bricks height using a simulation
         findFinalHeightsOfBricks();
+        // find the new array height
     }
 
     public int findEndOfRange() {
@@ -50,6 +51,15 @@ public class BrickLayout {
 
     public int findHeight() {
         return fileData.size();
+    }
+
+    public int findActualHeight(int[][] finalLayout) {
+        for (int row = 0; row < finalLayout.length; row++) {
+            if (checkBrickRowEmpty(row, 0, finalLayout[0].length)) {
+                return row;
+            }
+        }
+        return 0;
     }
 
     public void findFinalHeightsOfBricks() {
