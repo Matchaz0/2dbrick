@@ -37,9 +37,10 @@ public class DrawPanel extends JPanel implements MouseListener {
 //                originalTime = System.currentTimeMillis();
 //            }
 //        }
-        if ((time - originalTime) > 1000 && !b.finished()) {
-//            b.activateOneBrick();
-//            b.updateBrickLayout();
+        if ((time - originalTime) > 100 && !b.finished()) {
+            b.activateOneBrick();
+            b.updateBrickLayout();
+            b.printBrickLayout();
 //            b.findFinalHeightsOfBricks();
             originalTime = System.currentTimeMillis();
             grid = b.returnLayout();

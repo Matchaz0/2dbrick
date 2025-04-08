@@ -25,25 +25,12 @@ public class BrickLayout {
             bricks.add(b);
         }
         // remove
-        height +=2;
         // remove
 
         brickLayout = new int[height][range+1]; // add one to range because the ending index is one less than needed
         System.out.println(range);
         System.out.println(height);
-
         findFinalHeightsOfBricks();
-        System.out.println();
-        for (Brick b:bricks) {
-                System.out.println(b.getHeight());
-            }
-
-        while (!finished()) {
-            activateOneBrick();
-            updateBrickLayout();
-            printBrickLayout();
-            System.out.println();
-        }
     }
 
     public int findEndOfRange() {
@@ -156,7 +143,7 @@ public class BrickLayout {
             System.out.println();
         }
     }
-
+    // Exit condition to stop moving bricks
     public boolean finished() {
         boolean finish = true;
         for (Brick b: bricks) {
