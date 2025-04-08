@@ -10,6 +10,7 @@ public class Brick {
         this.end = end;
         this.height = 0;
         this.tempHeight = 0;
+        this.active = false;
     }
 
     public int getStart() {
@@ -57,8 +58,7 @@ public class Brick {
     }
 
     public void setActive() {
-        if (!isActive()) {
-            active = !active;
-        }
+        active = true;
+
     }
 }
